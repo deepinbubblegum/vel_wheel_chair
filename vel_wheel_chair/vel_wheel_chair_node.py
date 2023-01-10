@@ -19,7 +19,7 @@ class VelWheelChairNode(Node):
         
         # udp socket
         self.UDP_IP = "10.1.111.112" #10.1.111.112
-        self.UDP_PORT = 5005
+        self.UDP_PORT = 8888
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         self.counting = 0
