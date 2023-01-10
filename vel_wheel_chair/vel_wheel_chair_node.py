@@ -56,11 +56,19 @@ class VelWheelChairNode(Node):
         self.counting += 1
         
         # conver to percentage
-        self.drives['left'] = self.max_value_muc / 100 * self.drives['left']
-        self.drives['right'] = self.max_value_muc / 100 * self.drives['right']
+        percent_l = self.max_value_muc / 100 * self.drives['left']
+        percent_r = self.max_value_muc / 100 * self.drives['right']
         
-        self.get_logger().info('left: ' + str(self.drives['left']) + ' right: ' + str(self.drives['right']))
-        message = str(int(self.drives['left'])) + ',' + str(int(self.drives['right'])) + '\n'
+        drive_l = self.max_value_muc - (self.max_value_muc * (100 - percent_l) / 100)
+        drive_r = self.max_value_muc - (self.max_value_muc * (100 - percent_r) / 100)
+        
+        if drive_l > self.max_value_muc:
+            drive_l = self.max_value_muc
+        if drive_r > self.max_value_muc:
+            drive_r = self.max_value_muc
+        
+        self.get_logger().info('left: ' + str(drive_l) + ' right: ' + str(drive_r))
+        message = str(int(drive_l)) + ',' + str(int(drive_r)) + '\n'
         self.sock.sendto(message.encode(), (self.UDP_IP, self.UDP_PORT))
     
 def main(args=None):
