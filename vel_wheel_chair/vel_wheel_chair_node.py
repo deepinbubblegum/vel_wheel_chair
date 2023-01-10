@@ -7,7 +7,7 @@ class VelWheelChairNode(Node):
     def __init__(self):
         super().__init__('vel_wheel_chair_node')
         self.max_metres_per_second = 1.0 # max velocity of wheelchair
-        self.max_value_muc = 4096 # max value of motor unit controller
+        self.max_value_muc = 4095 # max value of motor unit controller
         self.wheel_radius = 0.254 # radius of wheel in metres
         self.width_between_wheels = 0.65 # in metres
         
@@ -18,7 +18,7 @@ class VelWheelChairNode(Node):
         
         
         # udp socket
-        self.UDP_IP = "127.0.0.1"
+        self.UDP_IP = "10.1.111.112" #10.1.111.112
         self.UDP_PORT = 5005
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
@@ -55,10 +55,13 @@ class VelWheelChairNode(Node):
             self.drives['right'] = 0
         self.counting += 1
         
+        # conver to percentage
+        self.drives['left'] = self.max_value_muc / 100 * self.drives['left']
+        self.drives['right'] = self.max_value_muc / 100 * self.drives['right']
+        
         self.get_logger().info('left: ' + str(self.drives['left']) + ' right: ' + str(self.drives['right']))
         message = str(int(self.drives['left'])) + ',' + str(int(self.drives['right'])) + '\n'
         self.sock.sendto(message.encode(), (self.UDP_IP, self.UDP_PORT))
-        
     
 def main(args=None):
     rclpy.init(args=args)
